@@ -117,16 +117,40 @@ def evaluate(
 # GET /evaluation-analytics
 # Returns evaluation counts for all feature flags.
 @router.get("/evaluation-analytics")
-def get_evaluation_analytics(
-    db: Session = Depends(get_db)
-):
-    analytics = (
-        db.query(EvaluationAnalytics)
-        .order_by(
-            EvaluationAnalytics.evaluation_date,
-            EvaluationAnalytics.evaluation_hour
+def get_evaluation_analytics():
+    analytics = []
+
+    for redis_key in redis_client.scan_iter(
+        match="flag_eval:*"
+    ):
+        parts = redis_key.split(":")
+
+        if len(parts) != 3:
+            continue
+
+        flag_id = int(parts[1])
+
+        date_hour = parts[2]
+
+        evaluation_date = date_hour[:10]
+        evaluation_hour = int(date_hour[11:])
+
+        evaluation_count = int(
+            redis_client.get(redis_key) or 0
         )
-        .all()
+
+        analytics.append({
+            "flag_id": flag_id,
+            "evaluation_date": evaluation_date,
+            "evaluation_hour": evaluation_hour,
+            "evaluation_count": evaluation_count
+        })
+
+    analytics.sort(
+        key=lambda item: (
+            item["evaluation_date"],
+            item["evaluation_hour"]
+        )
     )
 
     return analytics
