@@ -1,0 +1,496 @@
+/* =========================================================
+   OVERLAY
+========================================================= */
+
+.edit-targeting-modal-overlay {
+  position: fixed;
+  inset: 0;
+
+  background: rgba(2, 6, 23, 0.65);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  z-index: 2000;
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.edit-targeting-modal {
+  width: 100%;
+  max-width: 520px;
+
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+
+  border-radius: 16px;
+
+  box-shadow:
+    0 25px 60px var(--shadow);
+
+  overflow: hidden;
+
+  animation: editTargetingModalAppear 0.2s ease;
+}
+
+
+@keyframes editTargetingModalAppear {
+
+  from {
+    opacity: 0;
+    transform: translateY(15px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.edit-targeting-modal-header {
+  display: flex;
+
+  justify-content: space-between;
+  align-items: flex-start;
+
+  padding: 24px 26px;
+
+  border-bottom: 1px solid var(--border);
+
+  background: var(--surface);
+}
+
+
+.edit-targeting-modal-label {
+  display: block;
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.8px;
+
+  color: var(--accent);
+
+  margin-bottom: 5px;
+}
+
+
+.edit-targeting-modal-header h2 {
+  margin: 0;
+
+  font-size: 22px;
+
+  color: var(--text-primary);
+}
+
+
+.edit-targeting-modal-header p {
+  margin: 6px 0 0;
+
+  font-size: 13px;
+
+  color: var(--text-muted);
+}
+
+
+/* =========================================================
+   CLOSE BUTTON
+========================================================= */
+
+.edit-targeting-modal-close {
+  width: 34px;
+  height: 34px;
+
+  border: none;
+
+  background: var(--surface-secondary);
+
+  color: var(--text-muted);
+
+  border-radius: 50%;
+
+  font-size: 24px;
+
+  line-height: 1;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+
+.edit-targeting-modal-close:hover {
+  background: var(--surface-hover);
+
+  color: var(--text-primary);
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.edit-targeting-form {
+  padding: 24px 26px;
+}
+
+
+.edit-targeting-form-group {
+  margin-bottom: 18px;
+}
+
+
+.edit-targeting-form-group label {
+  display: block;
+
+  margin-bottom: 7px;
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  color: var(--text-primary);
+}
+
+
+/* =========================================================
+   INPUTS + SELECT
+========================================================= */
+
+.edit-targeting-form-group input,
+.edit-targeting-form-group select {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding: 11px 12px;
+
+  background: var(--input-bg);
+
+  color: var(--text-primary);
+
+  border: 1px solid var(--border);
+
+  border-radius: 8px;
+
+  font-size: 14px;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+
+.edit-targeting-form-group input::placeholder {
+  color: var(--text-muted);
+}
+
+
+.edit-targeting-form-group input:focus,
+.edit-targeting-form-group select:focus {
+  border-color: var(--accent);
+
+  box-shadow:
+    0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+
+/* =========================================================
+   SELECT OPTION
+========================================================= */
+
+.edit-targeting-form-group select option {
+  background: var(--surface);
+
+  color: var(--text-primary);
+}
+
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.edit-targeting-form-error {
+  padding: 10px 12px;
+
+  margin-top: 4px;
+
+  margin-bottom: 18px;
+
+  border-radius: 8px;
+
+  background: rgba(248, 113, 113, 0.12);
+
+  border: 1px solid rgba(248, 113, 113, 0.25);
+
+  color: var(--danger);
+
+  font-size: 13px;
+}
+
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.edit-targeting-modal-actions {
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  padding-top: 6px;
+}
+
+
+/* =========================================================
+   CANCEL
+========================================================= */
+
+.cancel-targeting-edit-button {
+  padding: 10px 18px;
+
+  border-radius: 8px;
+
+  border: 1px solid var(--border);
+
+  background: var(--surface-secondary);
+
+  color: var(--text-secondary);
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+
+.cancel-targeting-edit-button:hover {
+  background: var(--surface-hover);
+
+  color: var(--text-primary);
+
+  border-color: var(--accent);
+}
+
+
+/* =========================================================
+   SAVE
+========================================================= */
+
+.save-targeting-edit-button {
+  padding: 10px 18px;
+
+  border-radius: 8px;
+
+  border: 1px solid var(--accent);
+
+  background: var(--accent);
+
+  color: #ffffff;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+
+.save-targeting-edit-button:hover {
+  background: var(--accent-dark);
+
+  border-color: var(--accent-dark);
+
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 4px 12px rgba(99, 102, 241, 0.25);
+}
+
+
+.save-targeting-edit-button:disabled,
+.cancel-targeting-edit-button:disabled {
+  opacity: 0.6;
+
+  cursor: not-allowed;
+
+  transform: none;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+  .edit-targeting-modal {
+    max-width: 100%;
+  }
+
+  .edit-targeting-modal-header {
+    padding: 20px;
+  }
+
+  .edit-targeting-form {
+    padding: 20px;
+  }
+
+  .edit-targeting-modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .cancel-targeting-edit-button,
+  .save-targeting-edit-button {
+    width: 100%;
+  }
+
+}
+
+/* =========================================================
+   ROLLOUT PERCENTAGE SLIDER
+========================================================= */
+
+.rollout-slider-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.rollout-slider-header label {
+  margin-bottom: 0 !important;
+}
+
+
+/* Current percentage */
+
+.rollout-percentage-value {
+  min-width: 55px;
+  padding: 5px 10px;
+
+  background: var(--accent);
+  color: #ffffff;
+
+  border-radius: 7px;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  text-align: center;
+}
+
+
+/* Slider */
+
+.rollout-percentage-slider {
+  width: 100%;
+
+  height: 6px;
+
+  padding: 0 !important;
+
+  border: none !important;
+
+  border-radius: 10px;
+
+  background: var(--surface-secondary);
+
+  outline: none;
+
+  cursor: pointer;
+
+  appearance: none;
+}
+
+
+/* Chrome / Edge / Safari */
+
+.rollout-percentage-slider::-webkit-slider-thumb {
+  appearance: none;
+
+  width: 20px;
+  height: 20px;
+
+  border-radius: 50%;
+
+  background: var(--accent);
+
+  border: 3px solid var(--surface);
+
+  box-shadow:
+    0 0 0 2px var(--accent);
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.rollout-percentage-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+
+/* Firefox */
+
+.rollout-percentage-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+
+  border-radius: 50%;
+
+  background: var(--accent);
+
+  border: 3px solid var(--surface);
+
+  box-shadow:
+    0 0 0 2px var(--accent);
+
+  cursor: pointer;
+}
+
+
+/* Slider focus */
+
+.rollout-percentage-slider:focus {
+  box-shadow: none !important;
+}
+
+
+/* Percentage labels */
+
+.rollout-slider-labels {
+  display: flex;
+
+  justify-content: space-between;
+
+  margin-top: 8px;
+
+  font-size: 11px;
+
+  color: var(--text-muted);
+}

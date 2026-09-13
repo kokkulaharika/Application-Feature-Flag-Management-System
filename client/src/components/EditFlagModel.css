@@ -1,0 +1,451 @@
+/* =========================================================
+   EDIT FLAG MODAL OVERLAY
+========================================================= */
+
+.edit-flag-modal-overlay {
+  position: fixed;
+  inset: 0;
+
+  background: rgba(2, 6, 23, 0.65);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  z-index: 2000;
+
+  backdrop-filter: blur(3px);
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.edit-flag-modal {
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+
+  overflow-y: auto;
+
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+
+  border-radius: 14px;
+
+  padding: 28px;
+
+  color: var(--text-primary);
+
+  box-shadow:
+    0 20px 60px var(--shadow);
+
+  animation: editFlagModalAnimation 0.2s ease;
+}
+
+
+/* =========================================================
+   ANIMATION
+========================================================= */
+
+@keyframes editFlagModalAnimation {
+
+  from {
+    opacity: 0;
+    transform: translateY(-12px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.edit-flag-modal-header {
+  display: flex;
+
+  justify-content: space-between;
+  align-items: flex-start;
+
+  margin-bottom: 26px;
+}
+
+.edit-flag-modal-header h2 {
+  margin: 0;
+
+  font-size: 22px;
+
+  color: var(--text-primary);
+}
+
+.edit-flag-modal-header p {
+  margin: 7px 0 0;
+
+  font-size: 14px;
+
+  color: var(--text-muted);
+}
+
+
+/* =========================================================
+   CLOSE
+========================================================= */
+
+.edit-flag-modal-close {
+  width: 34px;
+  height: 34px;
+
+  border: none;
+
+  border-radius: 8px;
+
+  background: transparent;
+
+  color: var(--text-secondary);
+
+  font-size: 26px;
+
+  cursor: pointer;
+}
+
+.edit-flag-modal-close:hover {
+  background: var(--surface-hover);
+
+  color: var(--text-primary);
+}
+
+
+/* =========================================================
+   FORM GROUP
+========================================================= */
+
+.edit-flag-form-group {
+  margin-bottom: 18px;
+}
+
+.edit-flag-form-group label {
+  display: block;
+
+  margin-bottom: 7px;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  color: var(--text-primary);
+}
+
+
+/* =========================================================
+   INPUT / SELECT / TEXTAREA
+========================================================= */
+
+.edit-flag-form-group input,
+.edit-flag-form-group select,
+.edit-flag-form-group textarea {
+
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding: 11px 12px;
+
+  border: 1px solid var(--border);
+
+  border-radius: 8px;
+
+  background: var(--input-bg);
+
+  color: var(--text-primary);
+
+  font-size: 14px;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.edit-flag-form-group input::placeholder,
+.edit-flag-form-group textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.edit-flag-form-group input:focus,
+.edit-flag-form-group select:focus,
+.edit-flag-form-group textarea:focus {
+
+  border-color: var(--accent);
+
+  box-shadow:
+    0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.edit-flag-form-group textarea {
+  resize: vertical;
+}
+
+
+/* =========================================================
+   ENABLED ROW
+========================================================= */
+
+.edit-flag-enabled-row {
+
+  display: flex;
+
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 20px;
+
+  padding: 16px;
+
+  margin-top: 5px;
+
+  border: 1px solid var(--border);
+
+  border-radius: 10px;
+
+  background: var(--surface-secondary);
+}
+
+.edit-flag-enabled-row div {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+.edit-flag-enabled-row strong {
+  font-size: 14px;
+
+  color: var(--text-primary);
+}
+
+.edit-flag-enabled-row span {
+  font-size: 12px;
+
+  color: var(--text-muted);
+}
+
+
+/* =========================================================
+   SWITCH
+========================================================= */
+
+.edit-flag-switch {
+  position: relative;
+
+  width: 46px;
+  height: 24px;
+
+  flex-shrink: 0;
+}
+
+.edit-flag-switch input {
+  opacity: 0;
+
+  width: 0;
+  height: 0;
+}
+
+.edit-flag-slider {
+
+  position: absolute;
+
+  inset: 0;
+
+  background: var(--border);
+
+  border-radius: 20px;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.edit-flag-slider::before {
+
+  content: "";
+
+  position: absolute;
+
+  width: 18px;
+  height: 18px;
+
+  left: 3px;
+  top: 3px;
+
+  border-radius: 50%;
+
+  background: white;
+
+  transition: 0.2s ease;
+}
+
+.edit-flag-switch input:checked + .edit-flag-slider {
+  background: var(--accent);
+}
+
+.edit-flag-switch input:checked + .edit-flag-slider::before {
+  transform: translateX(22px);
+}
+
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.edit-flag-form-error {
+
+  padding: 11px 13px;
+
+  margin-top: 18px;
+
+  border: 1px solid rgba(248, 113, 113, 0.3);
+
+  border-radius: 8px;
+
+  background: rgba(248, 113, 113, 0.1);
+
+  color: var(--danger);
+
+  font-size: 13px;
+}
+
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.edit-flag-modal-actions {
+
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  margin-top: 26px;
+
+  padding-top: 20px;
+
+  border-top: 1px solid var(--border);
+}
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.cancel-edit-flag-button,
+.save-edit-flag-button {
+
+  min-width: 120px;
+
+  padding: 10px 18px;
+
+  border-radius: 8px;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+
+/* CANCEL */
+
+.cancel-edit-flag-button {
+
+  border: 1px solid var(--border);
+
+  background: var(--surface-secondary);
+
+  color: var(--text-secondary);
+}
+
+.cancel-edit-flag-button:hover {
+
+  background: var(--surface-hover);
+
+  color: var(--text-primary);
+}
+
+
+/* SAVE */
+
+.save-edit-flag-button {
+
+  border: 1px solid var(--accent);
+
+  background: var(--accent);
+
+  color: white;
+
+  box-shadow:
+    0 4px 12px rgba(99, 102, 241, 0.2);
+
+}
+
+.save-edit-flag-button:hover {
+
+  background: var(--accent-dark);
+
+  border-color: var(--accent-dark);
+
+  transform: translateY(-1px);
+
+}
+
+
+/* DISABLED */
+
+.cancel-edit-flag-button:disabled,
+.save-edit-flag-button:disabled {
+
+  opacity: 0.6;
+
+  cursor: not-allowed;
+
+  transform: none;
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+  .edit-flag-modal {
+    padding: 22px;
+
+    max-height: 92vh;
+  }
+
+  .edit-flag-modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .cancel-edit-flag-button,
+  .save-edit-flag-button {
+    width: 100%;
+  }
+
+}

@@ -1,0 +1,13 @@
+.venv/
+venv/
+__pycache__/
+.pytest_cache/
+.env
+*.pyc
+
+# Frontend
+node_modules/
+dist/
+
+# Zip files
+*.zip
