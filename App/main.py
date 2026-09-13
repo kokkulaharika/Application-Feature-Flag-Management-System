@@ -96,7 +96,10 @@ app.add_middleware(
     CORSMiddleware,
 
     # React frontend
-    allow_origins=["http://localhost:3000"],
+    allow_origins=[
+    "http://localhost:3000",
+    "https://feature-flag-management.netlify.app"
+],
 
     # Allow credentials such as authentication tokens
     allow_credentials=True,
