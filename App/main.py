@@ -98,7 +98,7 @@ app.add_middleware(
     # React frontend
     allow_origins=[
     "http://localhost:3000",
-    "https://feature-flag-management.netlify.app"
+    "https://talented-presence-production-4fe9.up.railway.app"
 ],
 
     # Allow credentials such as authentication tokens
