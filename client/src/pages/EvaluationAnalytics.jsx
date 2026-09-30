@@ -20,6 +20,19 @@ function EvaluationAnalytics() {
   const [flags, setFlags] = useState([]);
   const [selectedFlag, setSelectedFlag] = useState("all");
 
+  // =====================================================
+  // EVALUATE FLAG STATE
+  // =====================================================
+
+  const [evaluateFlagKey, setEvaluateFlagKey] = useState("");
+  const [evaluateEnvironment, setEvaluateEnvironment] =
+    useState("");
+  const [evaluateUserId, setEvaluateUserId] = useState("");
+
+  const [evaluationResult, setEvaluationResult] = useState(null);
+  const [evaluating, setEvaluating] = useState(false);
+  const [evaluationError, setEvaluationError] = useState("");
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -28,36 +41,41 @@ function EvaluationAnalytics() {
   // =====================================================
 
   useEffect(() => {
-    const loadAnalytics = async () => {
-      try {
-        setLoading(true);
+  const loadAnalytics = async () => {
+    try {
+      setLoading(true);
 
-        const [
-          analyticsResponse,
-          flagsResponse,
-        ] = await Promise.all([
+      const [analyticsResponse, flagsResponse] =
+        await Promise.all([
           api.get("/evaluation-analytics"),
           api.get("/flags"),
         ]);
 
-        setAnalytics(analyticsResponse.data);
-        setFlags(flagsResponse.data);
-      } catch (error) {
-        console.error(
-          "Evaluation analytics loading failed:",
-          error
-        );
+      setAnalytics(analyticsResponse.data);
+      setFlags(flagsResponse.data);
 
-        setError(
-          "Failed to load evaluation analytics."
+      // Select first flag automatically
+      if (flagsResponse.data.length > 0) {
+        setEvaluateFlagKey((current) =>
+          current || flagsResponse.data[0].key
         );
-      } finally {
-        setLoading(false);
       }
-    };
+    } catch (error) {
+      console.error(
+        "Evaluation analytics loading failed:",
+        error
+      );
 
-    loadAnalytics();
-  }, []);
+      setError(
+        "Failed to load evaluation analytics."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  loadAnalytics();
+}, []);
 
   // =====================================================
   // REMOVE DUPLICATE FLAGS
@@ -130,6 +148,70 @@ function EvaluationAnalytics() {
     }));
 
   // =====================================================
+  // EVALUATE FEATURE FLAG
+  // =====================================================
+
+  const handleEvaluateFlag = async () => {
+    setEvaluationResult(null);
+    setEvaluationError("");
+
+    if (!evaluateFlagKey) {
+      setEvaluationError(
+        "Please select a feature flag."
+      );
+      return;
+    }
+
+    if (!evaluateEnvironment) {
+      setEvaluationError(
+        "Please enter an environment name."
+      );
+      return;
+    }
+
+    try {
+      setEvaluating(true);
+
+      const requestData = {
+        flag_key: evaluateFlagKey,
+        environment_name: evaluateEnvironment,
+      };
+
+      // User context is optional
+      if (evaluateUserId.trim()) {
+        requestData.user_context = {
+          user_id: evaluateUserId.trim(),
+        };
+      }
+
+      const response = await api.post(
+        "/evaluate",
+        requestData
+      );
+
+      setEvaluationResult(response.data);
+
+      // Refresh analytics after evaluation
+      const analyticsResponse =
+        await api.get("/evaluation-analytics");
+
+      setAnalytics(analyticsResponse.data);
+    } catch (error) {
+      console.error(
+        "Feature flag evaluation failed:",
+        error
+      );
+
+      setEvaluationError(
+        error.response?.data?.detail ||
+          "Failed to evaluate feature flag."
+      );
+    } finally {
+      setEvaluating(false);
+    }
+  };
+
+  // =====================================================
   // LOADING
   // =====================================================
 
@@ -193,6 +275,221 @@ function EvaluationAnalytics() {
         </Link>
 
       </header>
+
+
+      {/* =================================================
+          EVALUATE FEATURE FLAG
+      ================================================= */}
+
+      <section className="evaluate-section">
+
+        <div className="evaluate-header">
+
+          <div className="evaluate-icon">
+            <i className="fas fa-flask"></i>
+          </div>
+
+          <div>
+            <h2>
+              Evaluate Feature Flag
+            </h2>
+
+            <p>
+              Test how an existing feature flag
+              behaves for a specific environment
+              and user.
+            </p>
+          </div>
+
+        </div>
+
+
+        <div className="evaluate-form">
+
+          {/* FEATURE FLAG */}
+
+          <div className="evaluate-field">
+
+            <label htmlFor="evaluateFlag">
+              Feature Flag
+            </label>
+
+            <select
+              id="evaluateFlag"
+              value={evaluateFlagKey}
+              onChange={(event) =>
+                setEvaluateFlagKey(
+                  event.target.value
+                )
+              }
+            >
+              <option value="">
+                Select a feature flag
+              </option>
+
+              {uniqueFlags.map((flag) => (
+                <option
+                  key={flag.flag_id}
+                  value={flag.key}
+                >
+                  {flag.key}
+                </option>
+              ))}
+            </select>
+
+          </div>
+
+
+          {/* ENVIRONMENT */}
+
+          <div className="evaluate-field">
+
+            <label htmlFor="evaluateEnvironment">
+              Environment
+            </label>
+
+            <input
+              id="evaluateEnvironment"
+              type="text"
+              placeholder="e.g. Production"
+              value={evaluateEnvironment}
+              onChange={(event) =>
+                setEvaluateEnvironment(
+                  event.target.value
+                )
+              }
+            />
+
+          </div>
+
+
+          {/* USER ID */}
+
+          <div className="evaluate-field">
+
+            <label htmlFor="evaluateUserId">
+              User ID
+              <span>Optional</span>
+            </label>
+
+            <input
+              id="evaluateUserId"
+              type="text"
+              placeholder="e.g. user123"
+              value={evaluateUserId}
+              onChange={(event) =>
+                setEvaluateUserId(
+                  event.target.value
+                )
+              }
+            />
+
+          </div>
+
+        </div>
+
+
+        {/* BUTTON */}
+
+        <button
+          type="button"
+          className="evaluate-button"
+          onClick={handleEvaluateFlag}
+          disabled={evaluating}
+        >
+          {evaluating ? (
+            <>
+              <i className="fas fa-spinner fa-spin"></i>
+              Evaluating...
+            </>
+          ) : (
+            <>
+              <i className="fas fa-play"></i>
+              Evaluate Flag
+            </>
+          )}
+        </button>
+
+
+        {/* ERROR */}
+
+        {evaluationError && (
+          <div className="evaluation-result evaluation-result-error">
+
+            <i className="fas fa-exclamation-circle"></i>
+
+            <div>
+              <strong>
+                Evaluation Failed
+              </strong>
+
+              <p>
+                {evaluationError}
+              </p>
+            </div>
+
+          </div>
+        )}
+
+
+        {/* RESULT */}
+
+        {evaluationResult && (
+          <div
+            className={`evaluation-result ${
+              evaluationResult.enabled
+                ? "evaluation-result-success"
+                : "evaluation-result-disabled"
+            }`}
+          >
+
+            <div className="result-icon">
+
+              <i
+                className={
+                  evaluationResult.enabled
+                    ? "fas fa-check-circle"
+                    : "fas fa-times-circle"
+                }
+              ></i>
+
+            </div>
+
+            <div className="result-content">
+
+              <div className="result-title">
+                {evaluationResult.enabled
+                  ? "Feature Flag Enabled"
+                  : "Feature Flag Disabled"}
+              </div>
+
+              <p className="result-message">
+                {evaluationResult.message ||
+                  "Default flag state"}
+              </p>
+
+              <div className="result-details">
+
+                <span>
+                  <strong>Flag:</strong>{" "}
+                  {evaluationResult.flag ||
+                    evaluateFlagKey}
+                </span>
+
+                <span>
+                  <strong>Environment:</strong>{" "}
+                  {evaluationResult.environment ||
+                    evaluateEnvironment}
+                </span>
+
+              </div>
+
+            </div>
+
+          </div>
+        )}
+
+      </section>
 
 
       {/* =================================================
@@ -306,9 +603,7 @@ function EvaluationAnalytics() {
           </div>
 
 
-          {/* =================================================
-              FEATURE FLAG FILTER
-          ================================================= */}
+          {/* FEATURE FLAG FILTER */}
 
           <div className="flag-filter">
 
@@ -348,9 +643,7 @@ function EvaluationAnalytics() {
         </div>
 
 
-        {/* =================================================
-            RECHART
-        ================================================= */}
+        {/* RECHART */}
 
         <div className="evaluation-chart">
 
@@ -359,7 +652,7 @@ function EvaluationAnalytics() {
             <div className="no-analytics">
 
               <div>
-                
+                <i className="fas fa-chart-bar"></i>
               </div>
 
               <h3>
@@ -457,7 +750,7 @@ function EvaluationAnalytics() {
           <div>
 
             <strong>
-               High evaluation count
+              High evaluation count
             </strong>
 
             <p>
@@ -472,7 +765,7 @@ function EvaluationAnalytics() {
           <div>
 
             <strong>
-               Low evaluation count
+              Low evaluation count
             </strong>
 
             <p>
@@ -486,7 +779,7 @@ function EvaluationAnalytics() {
           <div>
 
             <strong>
-               Unused flags
+              Unused flags
             </strong>
 
             <p>
