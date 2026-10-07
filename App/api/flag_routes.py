@@ -520,7 +520,7 @@ def create_targeting_rule(
             detail="Feature flag not found"
         )
 
-    # =====================================================
+    
     # CREATE TARGETING RULE
     # =====================================================
 
