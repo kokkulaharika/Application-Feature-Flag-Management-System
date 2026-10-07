@@ -488,6 +488,84 @@ def get_targeting_rule_by_id(
     return rule
 
 
+
+# =========================================================
+# CREATE TARGETING RULE
+# =========================================================
+
+# POST /targeting-rules
+# Creates a new targeting rule and records an audit log.
+@router.post("/targeting-rules")
+def create_targeting_rule(
+    request: TargetingRuleCreate,
+    db: Session = Depends(get_db)
+):
+    # =====================================================
+    # FIND FEATURE FLAG
+    # =====================================================
+
+    flag = (
+        db.query(Flag)
+        .filter(
+            Flag.flag_id == request.flag_id
+        )
+        .first()
+    )
+
+    # If the selected feature flag does not exist,
+    # return a 404 error.
+    if flag is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Feature flag not found"
+        )
+
+    # =====================================================
+    # CREATE TARGETING RULE
+    # =====================================================
+
+    new_rule = TargetingRule(
+        flag_id=request.flag_id,
+        attribute=request.attribute,
+        operator=request.operator,
+        value=request.value
+    )
+
+    # Add the new rule to the database.
+    db.add(new_rule)
+
+    # Commit so PostgreSQL generates rule_id.
+    db.commit()
+
+    # Refresh to get the generated rule_id.
+    db.refresh(new_rule)
+
+    # =====================================================
+    # AUDIT LOG
+    # =====================================================
+
+    new_state = {
+        "rule_id": new_rule.rule_id,
+        "flag_id": new_rule.flag_id,
+        "attribute": new_rule.attribute,
+        "operator": new_rule.operator,
+        "value": new_rule.value
+    }
+
+    create_audit_log(
+        db=db,
+        flag_id=new_rule.flag_id,
+        actor="system",
+        action="TARGETING_RULE_CREATE",
+        environment_id=flag.environment_id,
+        previous_state=None,
+        new_state=new_state
+    )
+
+    # Save the audit log.
+    db.commit()
+
+    return new_rule
 # =========================================================
 # UPDATE TARGETING RULE
 # =========================================================
